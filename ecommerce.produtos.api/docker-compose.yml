@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq_local
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: myuser
+      RABBITMQ_DEFAULT_PASS: mypassword
+    volumes:
+      # Volume opcional para persistir dados, logs e configurações
+      - rabbitmq_data:/var/lib/rabbitmq
+      # Volume opcional para logs, pode ser útil para debug
+      # - rabbitmq_log:/var/log/rabbitmq
+volumes:
+  rabbitmq_data:
+  # rabbitmq_log:
