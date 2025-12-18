@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq_local
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: myuser
+      RABBITMQ_DEFAULT_PASS: mypassword
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - loja-network
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongo_local
+    ports:
+      - "27017:27017"
+    command:
+      - mongod
+      - --replSet
+      - rs0
+      - --bind_ip_all
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - loja-network
+
+volumes:
+  rabbitmq_data:
+  mongo_data:
+
+networks:
+  loja-network:
+    driver: bridge
