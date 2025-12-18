@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmar Compra</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+<div class="bg-white p-8 rounded-2xl shadow-md w-full max-w-lg">
+
+    <h1 class="text-3xl font-bold mb-4 text-center">
+        Confirmar Compra
+    </h1>
+
+    <p class="text-gray-700 text-lg mb-6 text-center">
+        Revise os dados abaixo antes de confirmar sua compra.
+    </p>
+
+    <!-- Detalhes do Produto -->
+    <div class="bg-gray-50 p-4 rounded-md mb-6">
+        <h2 class="text-xl font-semibold mb-2">Detalhes do Produto</h2>
+        <div class="flex items-center space-x-4">
+            <img th:src="${produto.urlImagem}"
+                 alt="Imagem do Produto"
+                 class="w-24 h-24 object-cover rounded">
+
+            <div>
+                <p>
+                    <strong>Nome:</strong>
+                    <span th:text="${produto.nome}">Produto</span>
+                </p>
+                <p>
+                    <strong>Preço:</strong>
+                    R$ <span th:text="${produto.preco}">0,00</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detalhes do Endereço -->
+    <div class="bg-gray-50 p-4 rounded-md mb-6">
+        <h2 class="text-xl font-semibold mb-2">Endereço de Entrega</h2>
+
+        <p>
+            <strong>Logradouro:</strong>
+            <span th:text="${endereco.logradouro}">Rua</span>,
+            <strong>Número:</strong>
+            <span th:text="${endereco.numero}">0</span>
+        </p>
+
+        <p>
+            <strong>Bairro:</strong>
+            <span th:text="${endereco.bairro}">Bairro</span>
+        </p>
+
+        <p>
+            <strong>Cidade:</strong>
+            <span th:text="${endereco.cidade}">Cidade</span> -
+            <strong>Estado:</strong>
+            <span th:text="${endereco.estado}">UF</span>
+        </p>
+    </div>
+
+    <!-- BOTÃO CONFIRMAR -->
+    <form th:action="@{/compraConcluida}" method="post">
+	<input type="hidden" name="produtoId" id="produtoId">
+	<input type="hidden" name="quantidade" id="quantidade">
+        <button type="submit"
+                class="bg-indigo-600 text-white py-2 px-4 rounded-md
+                       hover:bg-indigo-700 transition block w-full text-center">
+            Confirmar Compra
+        </button>
+    </form>
+	<script>
+		const cart = Object.values(
+		  JSON.parse(localStorage.getItem("cart_items_v1")) || {}
+		);
+	
+		if (cart.length > 0) {
+		  document.getElementById("produtoId").value = cart[0].id;
+		  document.getElementById("quantidade").value = cart[0].qty;
+		}
+	</script>
+</div>
+
+</body>
+</html>

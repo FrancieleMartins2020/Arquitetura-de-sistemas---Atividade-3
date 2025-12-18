@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Meu Carrinho</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+<div class="bg-white p-6 rounded-2xl shadow-md w-full max-w-md">
+
+    <h1 class="text-2xl font-bold mb-6 text-center">
+        🛒 Meu Carrinho
+    </h1>
+
+    <!-- LISTA DE ITENS -->
+    <div id="cartItems" class="space-y-4"></div>
+
+    <!-- TOTAL -->
+    <div class="border-t pt-4 mt-4">
+        <p class="text-lg font-semibold text-right">
+            Total:
+            <span id="cartTotal" class="text-indigo-600">R$ 0,00</span>
+        </p>
+    </div>
+
+    <!-- AÇÕES -->
+    <div class="mt-6 space-y-3">
+        <a href="/consultarCep"
+           class="block w-full text-center bg-indigo-600 text-white py-2 px-4 rounded-md
+                  hover:bg-indigo-700 transition">
+            Finalizar Compra
+        </a>
+
+        <a href="/"
+           class="block w-full text-center bg-gray-200 text-gray-800 py-2 px-4 rounded-md
+                  hover:bg-gray-300 transition">
+            Voltar à Loja
+        </a>
+    </div>
+
+</div>
+
+<script>
+const CART_KEY = "cart_items_v1";
+
+function getCart() {
+    return JSON.parse(localStorage.getItem(CART_KEY)) || {};
+}
+
+function setCart(cart) {
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+}
+
+function removerItem(id) {
+    const cart = getCart();
+    delete cart[id];
+    setCart(cart);
+    renderCarrinho();
+}
+
+function renderCarrinho() {
+    const cart = Object.values(getCart());
+    const cartItems = document.getElementById("cartItems");
+    const cartTotal = document.getElementById("cartTotal");
+
+    cartItems.innerHTML = "";
+    let total = 0;
+
+    if (!cart.length) {
+        cartItems.innerHTML = `
+            <p class="text-center text-gray-500">
+                Seu carrinho está vazio
+            </p>
+        `;
+        cartTotal.textContent = "R$ 0,00";
+        return;
+    }
+
+    cart.forEach(i => {
+        total += i.preco * i.qty;
+
+        cartItems.innerHTML += `
+            <div class="flex items-center gap-4 border rounded-lg p-3">
+                <img src="${i.urlImagem}"
+                     alt="${i.nome}"
+                     class="w-20 h-16 object-cover rounded">
+
+                <div class="flex-1">
+                    <p class="font-semibold">${i.nome}</p>
+                    <p class="text-sm text-gray-600">
+                        ${i.qty} × R$ ${i.preco.toFixed(2)}
+                    </p>
+                </div>
+
+                <button
+                    class="text-red-600 text-sm font-semibold hover:underline"
+                    onclick="removerItem('${i.id}')">
+                    Excluir
+                </button>
+            </div>
+        `;
+    });
+
+    cartTotal.textContent = "R$ " + total.toFixed(2);
+}
+
+renderCarrinho();
+</script>
+
+</body>
+</html>

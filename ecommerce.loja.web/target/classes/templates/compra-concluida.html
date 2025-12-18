@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Compra Concluída</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-2xl shadow-md w-full max-w-lg">
+        <h1 class="text-3xl font-bold mb-4 text-center">Compra Concluída!</h1>
+        <p class="text-gray-700 text-lg mb-6 text-center">
+            Estamos processando seu pedido. Em breve você receberá a confirmação por e-mail.
+        </p>
+
+        <!-- Detalhes do Produto -->
+        <div class="bg-gray-50 p-4 rounded-md mb-6">
+            <h2 class="text-xl font-semibold mb-2">Detalhes do Produto</h2>
+            <div class="flex items-center space-x-4">
+                <img th:src="${produto.urlImagem}" alt="Imagem do Produto" class="w-24 h-24 object-cover rounded">
+                <div>
+                    <p><strong>Nome:</strong> <span th:text="${produto.nome}">Produto</span></p>
+                    <p><strong>Preço:</strong> R$ <span th:text="${produto.preco}">0,00</span></p>
+                </div>
+            </div>
+        </div>        
+
+        <a th:href="@{/}" 
+           class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition block text-center">
+            Voltar à loja
+        </a>
+    </div>
+	<script>
+	  localStorage.removeItem("cart_items_v1");
+	</script>
+</body>
+</html>
