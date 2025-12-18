@@ -1,158 +1,60 @@
-📦 Atividade 3 – Arquitetura Orientada a Eventos (E-commerce)
+# 🛒 Atividade 3 – Arquitetura Orientada a Eventos (E-commerce)
 
-Este repositório contém a implementação da Atividade 3, que demonstra uma arquitetura baseada em eventos, utilizando MongoDB Change Streams, RabbitMQ e múltiplas aplicações Spring Boot, simulando um fluxo de compra em um e-commerce.
+> Projeto desenvolvido para demonstrar **Arquitetura Orientada a Eventos**, utilizando **Spring Boot**, **MongoDB Change Streams** e **RabbitMQ**, simulando o fluxo de compra de um e-commerce moderno.
 
-🧩 Visão Geral da Arquitetura
+---
 
-A solução é composta por:
+## 📌 Arquitetura da Solução
 
-ecommerce.loja.web
-Aplicação principal do e-commerce, responsável por:
+<p align="center">
+  <img src="docs/arquitetura.png" alt="Arquitetura do Sistema" width="800"/>
+</p>
 
-Exibir produtos
+**Fluxo resumido:**
 
-Finalizar compras
+1. O usuário realiza uma compra no **ecommerce.loja.web**
+2. A venda é persistida no **MongoDB**
+3. O **Change Stream** detecta o evento de inserção
+4. O **monitorador.loja.web** processa o evento
+5. Mensagens são publicadas nas filas do **RabbitMQ**
+   - Pagamento
+   - E-mail
 
-Persistir vendas no MongoDB
+---
 
-monitorador.loja.web
-Serviço que:
+## 🧩 Serviços do Projeto
 
-Escuta eventos de inserção no MongoDB via Change Streams
+### 🛍️ ecommerce.loja.web
+- Exibe o catálogo de produtos
+- Consome a API de catálogo (`/catalogo`)
+- Finaliza compras
+- Persiste vendas no MongoDB
 
-Processa eventos de venda
+### 👀 monitorador.loja.web
+- Escuta eventos de inserção no MongoDB (Change Streams)
+- Converte documentos em objetos Java
+- Publica mensagens no RabbitMQ
+  - Fila de pagamento
+  - Fila de e-mail
 
-Publica mensagens nas filas de pagamento e e-mail no RabbitMQ
+---
 
-MongoDB (Replica Set)
-Utilizado para persistência e para viabilizar Change Streams.
+## 🛠️ Tecnologias Utilizadas
 
-RabbitMQ
-Responsável pela comunicação assíncrona entre os serviços.
+- Java 21  
+- Spring Boot 3  
+- Spring Data MongoDB  
+- MongoDB Change Streams  
+- Spring AMQP (RabbitMQ)  
+- RabbitMQ  
+- Docker  
+- Docker Compose  
 
-🛠️ Tecnologias Utilizadas
+---
 
-Java 21
+## 🚀 Subindo o Ambiente
 
-Spring Boot 3.x
+### 🔴 Remover containers antigos (se existirem)
 
-Spring Data MongoDB
-
-Spring AMQP (RabbitMQ)
-
-MongoDB
-
-RabbitMQ
-
-Docker & Docker Compose
-
-📋 Pré-requisitos
-
-Antes de iniciar, certifique-se de ter instalado:
-
-Docker
-
-Docker Compose
-
-Java 21
-
-Maven
-
-🚀 Passo a Passo para Subir o Ambiente
-🔹 1. Remover containers antigos (se existirem)
+```bash
 docker rm -f rabbitmq_local
-
-🔹 2. Subir os containers via Docker Compose
-docker compose up -d
-
-
-Esse comando sobe os serviços definidos no docker-compose.yml.
-
-🔹 3. Subir o RabbitMQ manualmente (caso necessário)
-docker run -d \
-  --name rabbitmq \
-  -p 5672:5672 \
-  -p 15672:15672 \
-  rabbitmq:3-management
-
-
-Interface Web: http://localhost:15672
-
-Usuário padrão: guest
-
-Senha padrão: guest
-
-🔹 4. Subir o MongoDB manualmente (caso necessário)
-docker run -d \
-  --name mongo-loja \
-  -p 27017:27017 \
-  mongo:latest
-
-🔹 5. Subir apenas o serviço MongoDB via Docker Compose
-docker-compose up -d mongodb
-
-🔁 Configuração do Replica Set (Obrigatório para Change Streams)
-🔹 6. Acessar o MongoDB
-docker exec -it mongo_local mongosh
-
-🔹 7. Inicializar o Replica Set
-rs.initiate()
-
-🔹 8. Verificar o status
-rs.status()
-
-🔹 9. Reconfigurar o Replica Set (se necessário)
-
-Caso o replica set não esteja funcionando corretamente:
-
-rs.initiate()
-
-rs.reconfig({
-  _id: "rs0",
-  members: [
-    { _id: 0, host: "localhost:27017" }
-  ]
-}, { force: true })
-
-rs.status()
-
-🔹 10. Reiniciar o MongoDB
-docker restart mongo_local
-
-▶️ Execução das Aplicações
-
-Após o ambiente estar configurado:
-
-Inicie o projeto ecommerce.loja.web
-
-Em seguida, inicie o projeto monitorador.loja.web
-
-Ao finalizar uma compra:
-
-A venda é salva no MongoDB
-
-O Change Stream detecta o evento
-
-O monitorador publica mensagens no RabbitMQ
-
-As filas de pagamento e e-mail recebem os eventos
-
-📌 Observações Importantes
-
-O MongoDB precisa estar em modo Replica Set para que os Change Streams funcionem.
-
-As exchanges do RabbitMQ devem existir antes do envio das mensagens.
-
-Toda a comunicação entre serviços ocorre de forma assíncrona, seguindo o modelo orientado a eventos.
-
-🎯 Objetivo da Atividade
-
-Demonstrar na prática:
-
-Arquitetura orientada a eventos
-
-Uso de Change Streams no MongoDB
-
-Comunicação assíncrona com RabbitMQ
-
-Integração entre múltiplos serviços Spring Boot
